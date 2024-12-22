@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu - The Roastery & Reverie</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #fff0f5, #ffcccb);
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar {
+            background-color: #e75480;
+        }
+        .navbar-brand {
+            color: white;
+            font-weight: bold;
+        }
+        .navbar-brand:hover {
+            color: #ff699b;
+        }
+        .menu-container {
+            padding: 2rem;
+        }
+        .menu-item {
+            background-color: #fff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+        }
+        .menu-item img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 1rem;
+        }
+        .menu-item h5 {
+            color: #e75480;
+        }
+        .cart-button {
+            margin-top: 1rem;
+        }
+        .btn-add-cart {
+            background-color: #e75480;
+            color: white;
+        }
+        .btn-add-cart:hover {
+            background-color: #ff699b;
+        }
+        .cart-view {
+            text-align: center;
+            margin: 2rem 0;
+        }
+        .btn-view-cart {
+            background-color: #e75480;
+            color: white;
+        }
+        .btn-view-cart:hover {
+            background-color: #ff699b;
+        }
+        .btn-clear-cart {
+            background-color: #555;
+            color: white;
+            margin-left: 10px;
+        }
+        .btn-clear-cart:hover {
+            background-color: #777;
+        }
+        .total-amount {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: #e75480;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            font-size: 1.2rem;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="total-amount">Total Amount: ₹<span id="totalAmount">0</span></div>
+
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">The Roastery & Reverie</a>
+        </div>
+    </nav>
+
+    <div class="menu-container container">
+        <h2 class="text-center mb-4">Our Coffee Menu</h2>
+
+        <!-- Dynamic menu items will be populated here -->
+        <div id="menuItems"></div>
+
+        <div class="cart-view">
+            <button class="btn btn-view-cart" onclick="goToPayment()">Proceed to Payment</button>
+            <button class="btn btn-clear-cart">Clear Total</button>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const menuData = [
+            { name: "Espresso", price: 100, img: "COFFEE 3.jpg" },
+            { name: "Cappuccino", price: 150, img: "coffee2.jpg" },
+            { name: "Latte", price: 200, img: "COFFEE1.jpg" },
+            { name: "Pain au chocolat", price: 60, img: "SNACKS1.jpg" },
+            { name: "bündner nusstorte", price: 90, img: "cake.jpg" },
+            { name: "chateau petrus", price: 900, img: "wine2.jpg" },
+
+
+
+
+            // Add more coffee items here
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            let totalAmount = 0;
+
+            const menuItemsContainer = document.getElementById('menuItems');
+
+            menuData.forEach((item, index) => {
+                const menuItem = document.createElement('div');
+                menuItem.classList.add('menu-item');
+
+                menuItem.innerHTML = `
+                    <img src="${item.img}" alt="${item.name}">
+                    <div>
+                        <h5>${item.name}</h5>
+                        <p>Price: ₹${item.price}</p>
+                        <label for="size">Size:</label>
+                        <select id="size-${index}" class="form-select d-inline-block w-auto">
+                            <option value="0">Small</option>
+                            <option value="20">Medium + ₹20</option>
+                            <option value="30">Large + ₹30</option>
+                        </select>
+                        <br>
+                        <div class="form-check mt-2">
+                            <input class="form-check-input" type="checkbox" id="coupleOption-${index}">
+                            <label class="form-check-label" for="coupleOption-${index}">Couple Offer</label>
+                        </div>
+                        <button class="btn btn-add-cart mt-2" data-index="${index}">Add to Cart</button>
+                    </div>
+                `;
+
+                menuItemsContainer.appendChild(menuItem);
+            });
+
+            document.querySelectorAll('.btn-add-cart').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const index = e.target.dataset.index;
+                    const sizePrice = parseInt(document.getElementById(`size-${index}`).value);
+                    const isCouple = document.getElementById(`coupleOption-${index}`).checked;
+
+                    let quantity = isCouple ? 2 : 1;
+                    let itemTotal = (menuData[index].price + sizePrice) * quantity;
+
+                    totalAmount += itemTotal;
+                    document.getElementById('totalAmount').textContent = totalAmount;
+                });
+            });
+
+            document.querySelector('.btn-clear-cart').addEventListener('click', () => {
+                totalAmount = 0;
+                document.getElementById('totalAmount').textContent = totalAmount;
+            });
+        });
+
+        function goToPayment() {
+            window.location.href = "payment.html";
+        }
+    </script>
+</body>
+</html>
